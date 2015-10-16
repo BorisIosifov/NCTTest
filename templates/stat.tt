@@ -1,0 +1,14 @@
+[% INCLUDE header.tt %]
+
+<script>
+function showStat () {
+	document.location = '/stat/?days=' + $('#days').val();
+}
+</script>
+
+<br>Показать статистику с периодичностью в <input type="text" id="days" value="[%days%]" style="width: 30px;"> дней <input type="button" value="Показать" onclick="showStat()"><br><br>
+[% FOREACH s IN stat %]
+	[% s.0 %] <b>[% s.1 %]</b><br>
+[% END %]
+
+[% INCLUDE footer.tt %]

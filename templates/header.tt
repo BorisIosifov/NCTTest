@@ -1,0 +1,10 @@
+<html>
+	<head>
+		<title>[% IF section == 'admin' %]Управление пользователями[% ELSIF section == 'stat' %]Статистика[% END %]</title>
+		<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+	</head>
+	<body>
+	[% IF section != 'admin' %]<a href="/admin/">[% END %]Управление пользователями[% IF section != 'admin' %]</a>[% END %]
+	|
+	[% IF section != 'stat' %]<a href="/stat/">[% END %]Статистика[% IF section != 'stat' %]</a>[% END %]
+	<br>

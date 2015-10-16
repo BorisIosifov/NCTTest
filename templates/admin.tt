@@ -1,0 +1,68 @@
+[% INCLUDE header.tt %]
+
+<script>
+function changeStatus(id, status){
+	$.ajax({
+		url: '/admin/?action=change_status&id=' + id + '&status=' + status,
+	}).done(function(text){
+		if (text == 'ok'){
+			alert('Новый статус сохранен');
+		} else if (text == 'wrong_status') {
+			alert('Ошибка: не верный статус');
+		} else if (text == 'wrong_id') {
+			alert('Ошибка: не верный идентификатор пользователя');
+		}
+	});
+}
+</script>
+
+[% IF error %]
+<h3 style="color: red;">[% error %]</h3>
+[% END %]
+<div style="width: 400; height: 330; float: left">
+	<h2>Добавить пользователя</h2>
+	<form action="admin">
+		<input type="hidden" name="action" value="add">
+		Имя:<br>
+		<input type="text" name="name" value="[% params.name %]"><br><br>
+		Телефон (10 цифровых символов):<br>
+		<input type="text" name="phone" value="[% params.phone %]"><br><br>
+		Время регистрации (В формате <i>ГГГГ-ММ-ДД ЧЧ:ММ:СС</i> либо просто <i>ГГГГ-ММ-ДД</i>. Не обязательно. При незаполнении берется текущее время):<br>
+		<input type="text" name="ctime" value="[% params.ctime %]"><br><br>
+		<input type="submit" value="Добавить"><br>
+	</form>
+</div>
+<div style="width: 400; height: 330; float: left">
+	<h2>Порядок сортировки</h2>
+		<input type="radio" name="sort" id="sort-1" value="1"[% IF sort != 2 AND sort != 3 AND sort != 4%] checked[% END %] onchange="document.location='/admin/?sort=1'"><label for="sort-1">Дата (по убыванию)</label><br>
+		<input type="radio" name="sort" id="sort-2" value="2"[% IF sort == 2 %] checked[% END %] onchange="document.location='/admin/?sort=2'"><label for="sort-1">Дата (по возрастанию)</label><br>
+		<input type="radio" name="sort" id="sort-3" value="3"[% IF sort == 3 %] checked[% END %] onchange="document.location='/admin/?sort=3'"><label for="sort-1">Имя (по убыванию)</label><br>
+		<input type="radio" name="sort" id="sort-4" value="4"[% IF sort == 4 %] checked[% END %] onchange="document.location='/admin/?sort=4'"><label for="sort-1">Имя (по возрастанию)</label><br>
+</div>
+
+[% INCLUDE pager %]
+[% FOREACH user IN users %]
+<div style="clear: left; width: 800px; height: 20px; padding: 10px;[% IF loop.odd %] background-color: #e0e0e0[% END %]">
+	<div style="width: 400px; float: left;">[% user.name %]</div>
+	<div style="width: 120px; float: left;">[% user.phone %]</div>
+	<div style="width: 180px; float: left;">[% user.ctime %]</div>
+	<div style="width: 100px; float: left;">
+		<select onchange="changeStatus([% user.id %], this.value)">
+			[% FOREACH status IN ['new', 'registered', 'refused', 'unavailable'] %]
+				<option value="[% status %]"[% IF user.status == status %] selected[% END %]>[% status%]</option>
+			[% END %]
+		</select>
+	</div>
+</div>
+[% END %]
+[% INCLUDE pager %]
+
+[% INCLUDE footer.tt %]
+
+[% BLOCK pager %]
+<div style="clear: left;">
+[% FOREACH p IN [1 .. pages]%]
+	[% IF p != page%]<a href="/admin/?page=[% p %]">[% END %][% p %][% IF p != page%]</a>[% END %]
+[% END %]
+</div>
+[% END %]

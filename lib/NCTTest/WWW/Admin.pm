@@ -58,7 +58,7 @@ sub process {
 
     my $query = "select * from users order by $order_type limit ? offset ?";
     my $users = $self->{db}{dbh}->selectall_arrayref($query, {Slice => {}}, $lpp, ($page -1) * $lpp);
-    $_->{ctime} =~ s/\.\d+(\+\d{2,4})?$// foreach @$users;
+    $_->{ctime} =~ s/(\.\d+)?(\+\d{2,4})?$// foreach @$users;
 
     $self->{template_vars} = {
         error => $error,
